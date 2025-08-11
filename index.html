@@ -1,1 +1,172 @@
-gracias
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎉 Selamat Ulang Tahun 🎂</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #ffdde1, #ee9ca7);
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-top: 20px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        p {
+            font-size: 1.5em;
+            opacity: 0;
+            animation: slideUp 2s ease-out forwards;
+            animation-delay: 1s;
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        img {
+            max-width: 300px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            animation: float 3s ease-in-out infinite;
+            opacity: 0;
+            animation: float 3s ease-in-out infinite, fadeInImage 2s ease-out forwards;
+            animation-delay: 0s, 2.5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInImage {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        /* Teks berjalan dramatis */
+        .marquee {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            font-size: 1.5em;
+            font-weight: bold;
+            animation: marquee 15s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Selamat Ulang Tahun 🎂</h1>
+    <p>Semoga hari ini penuh kebahagiaan, cinta, dan tawa ❤️</p>
+
+    <!-- Foto -->
+    <img src="foto.jpg" alt="Foto Ulang Tahun">
+
+    <!-- Lagu -->
+    <audio id="birthdaySong" autoplay>
+        <source src="lagu.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung audio.
+    </audio>
+
+    <!-- Canvas untuk confetti -->
+    <canvas id="confetti"></canvas>
+
+    <!-- Teks berjalan -->
+    <div class="marquee">💖 Selamat ulang tahun! Semoga panjang umur, sehat selalu, dan semua impianmu tercapai 💖</div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let confettiPieces = [];
+
+        function randomColor() {
+            const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#1dd1a1', '#5f27cd', '#ff9ff3'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function createConfetti() {
+            return {
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height - canvas.height,
+                size: Math.random() * 8 + 2,
+                color: randomColor(),
+                speed: Math.random() * 3 + 2
+            };
+        }
+
+        function drawConfetti(c) {
+            ctx.fillStyle = c.color;
+            ctx.beginPath();
+            ctx.arc(c.x, c.y, c.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function updateConfetti(c) {
+            c.y += c.speed;
+            if (c.y > canvas.height) {
+                c.y = -10;
+                c.x = Math.random() * canvas.width;
+            }
+        }
+
+        function startConfetti() {
+            confettiPieces = Array.from({ length: 150 }, createConfetti);
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            confettiPieces.forEach(c => {
+                drawConfetti(c);
+                updateConfetti(c);
+            });
+            requestAnimationFrame(animateConfetti);
+        }
+
+        // Jalankan otomatis saat halaman terbuka
+        window.onload = () => {
+            startConfetti();
+
+            // Auto play music di browser modern butuh interaction hack
+            const audio = document.getElementById('birthdaySong');
+            audio.play().catch(() => {
+                document.body.addEventListener('click', () => {
+                    audio.play();
+                }, { once: true });
+            });
+        };
+    </script>
+</body>
+</html>
